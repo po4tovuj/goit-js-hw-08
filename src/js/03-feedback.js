@@ -29,17 +29,23 @@ const parseFormElements = target => {
   return { email, message };
 };
 const onFormChange = e => {
-  const formObject = parseFormElements(e.currentTarget);
-  saveForm(formObject);
+  try {
+    const formObject = parseFormElements(e.currentTarget);
+    saveForm(formObject);
+  } catch (err) {
+    // console.error(err);
+  }
 };
 const handleSubmit = event => {
   event.preventDefault();
-  console.log(parseFormElements());
+  console.log(parseFormElements(event.currentTarget));
   clearForm();
 };
+const throttled = throttle(onFormChange, UPDATE_FREQUENCY);
+
 function checkDataInCache() {
   return JSON.parse(localStorage.getItem(FEEDBACK_ENUM)) || null;
 }
 
-formElement.addEventListener('input', throttle(onFormChange, UPDATE_FREQUENCY));
+formElement.addEventListener('input', throttled);
 formElement.addEventListener('submit', handleSubmit);
